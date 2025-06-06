@@ -7,3 +7,8 @@ Express.js: For building RESTful APIs.
 ● jsonwebtoken: For implementing authentication via JWT.
 ● bcrypt: For password hashing and securing user credentials.
 ● dotenv: For managing environment variables
+
+# to test app
+
+-- npm install
+-- npm run dev
