@@ -8,7 +8,7 @@ export function setJwtCookie(res, token) {
     sameSite: "Strict",
     maxAge: 3600000,
   });
-  console.log(`JWT cookie set with token: ${token}`);
+  console.log("JWT cookie set with token");
 }
 
 export function getJwtCookie(req) {

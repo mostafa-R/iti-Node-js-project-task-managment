@@ -1,7 +1,9 @@
 //auth controller for register and login user logic
 import User from "../models/users.js";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
+import { clearJwtCookie } from "../utils/cookie.js";
 import { generateToken } from "../utils/jwtHelpers.js";
+
 
 export const register = async (req, res) => {
   try {
@@ -55,5 +57,22 @@ export const login = async (req, res) => {
     res
       .status(401)
       .json({ message: "something went wrong", error: error.message });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+
+    clearJwtCookie(res);
+    return res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong during logout.",
+      error: error.message,
+    });
   }
 };

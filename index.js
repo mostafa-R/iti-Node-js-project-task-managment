@@ -4,8 +4,8 @@ import dontenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import { authToken } from "./src/middleware/auth.middleware.js";
-import authRouter from "./src/routes/authRoutes.js";
-import userRouter from "./src/routes/userRoutes.js";
+import authRouter from "./src/routes/auth.Routes.js";
+import userRouter from "./src/routes/user.Routes.js";
 
 dontenv.config();
 const app = express();
