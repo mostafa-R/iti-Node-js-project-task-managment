@@ -8,23 +8,21 @@ const taskSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-    },
-    content: {
-      type: String,
       required: true,
     },
+
     dueDate: {
       type: Date,
     },
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
-      default: "",
+      default: "low",
     },
     Status: {
       type: String,
       enum: ["pending", "progress", "completed"],
-      default: "",
+      default: "pending",
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,6 +39,22 @@ const taskSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+taskSchema.index({ title: "text", description: "text" });
+taskSchema.index({ category: 1 });
+taskSchema.index({ priority: 1 });
+
+taskSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name",
+  });
+  this.populate({
+    path: "user",
+    select: "name -_id",
+  });
+  next();
+});
 
 const Task = mongoose.model("Task", taskSchema);
 export default Task;

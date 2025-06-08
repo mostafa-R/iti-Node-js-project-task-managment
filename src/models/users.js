@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
     deletedAt: {
       type: Date,
       default: null,
+      index: { expires: "30d" }, // delete user after 30 days
     },
   },
   {

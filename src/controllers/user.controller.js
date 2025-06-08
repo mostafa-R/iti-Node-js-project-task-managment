@@ -1,4 +1,5 @@
 import User from "../models/users.js";
+import { paginate } from "../utils/pagination.js";
 
 export const getUser = async (req, res) => {
   try {
@@ -17,8 +18,10 @@ export const getUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ deletedAt: null });
-    res.status(200).json({ succes: true, users });
+    const { page, limit } = req.query;
+    const users = await paginate(User, { deletedAt: null }, { page, limit });
+
+    res.status(200).json({ success: true, users });
   } catch (error) {
     res
       .status(500)
@@ -96,8 +99,20 @@ export const restoreUser = async (req, res) => {
 export const searchUser = async (req, res) => {
   try {
     const search = req.query.search || "";
-    const users = await User.find({ name: { $regex: search, $options: "i" } });
-    res.status(200).json({ success: true, users });
+    const { page, limit } = req.query;
+
+    const filter = {
+      deletedAt: null,
+      name: { $regex: search, $options: "i" },
+    };
+
+    const users = await paginate(User, filter, { page, limit });
+
+    if (users.data.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json({ users });
   } catch (error) {
     res
       .status(500)

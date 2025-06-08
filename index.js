@@ -5,6 +5,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { authToken } from "./src/middleware/auth.middleware.js";
 import authRouter from "./src/routes/auth.Routes.js";
+import taskRouter from "./src/routes/task.Routes.js";
 import userRouter from "./src/routes/user.Routes.js";
 
 dontenv.config();
@@ -22,6 +23,7 @@ app.use((err, req, res, next) => {
 app.use("/", authRouter);
 app.use(authToken);
 app.use("/user", userRouter);
+app.use("/task", taskRouter);
 
 mongoose
   .connect(process.env.MONGODB_URL)
