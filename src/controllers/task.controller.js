@@ -3,7 +3,7 @@ import Task from "../models/task.js";
 
 export async function createTask(req, res) {
   try {
-    const { title, content, description, category, Status, dueDate, priority } =
+    const { title, description, category, Status, dueDate, priority } =
       req.body;
 
     const userId = req.user.id;
@@ -19,7 +19,6 @@ export async function createTask(req, res) {
     const task = await Task.create({
       title,
       description,
-      content,
       dueDate,
       priority,
       Status,
@@ -35,6 +34,18 @@ export async function createTask(req, res) {
   }
 }
 
+export async function getTask(req, res) {
+  try {
+    const task = await Task.findOne({ _id: req.params.id, user: req.user.id });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    res.json(task);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 export async function getTasks(req, res) {
   try {
     const { status, priority, category, search } = req.query;
@@ -42,13 +53,13 @@ export async function getTasks(req, res) {
 
     if (status) query.status = status;
     if (priority) query.priority = priority;
-    if (category) query.category = category;
+    if (category) query.category = category.types.name;
 
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } },
+        { "category.name": { $regex: search, $options: "i" } },
       ];
     }
 
@@ -76,17 +87,17 @@ export async function updateTask(req, res) {
   }
 }
 
-export async function deleteTask(req, res) {
-  try {
-    const task = await Task.findOneAndDelete({
-      _id: req.params.id,
-      user: req.user.id,
-    });
+// export async function deleteTask(req, res) {
+//   try {
+//     const task = await Task.findOneAndDelete({
+//       _id: req.params.id,
+//       user: req.user.id,
+//     });
 
-    if (!task) return res.status(404).json({ message: "Task not found" });
+//     if (!task) return res.status(404).json({ message: "Task not found" });
 
-    res.json({ message: "Task deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-}
+//     res.json({ message: "Task deleted successfully" });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// }
