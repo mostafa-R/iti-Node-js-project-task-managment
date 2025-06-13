@@ -5,6 +5,7 @@ const taskSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      index: true,
     },
     description: {
       type: String,
@@ -43,6 +44,7 @@ const taskSchema = new mongoose.Schema(
 taskSchema.index({ title: "text", description: "text" });
 taskSchema.index({ category: 1 });
 taskSchema.index({ priority: 1 });
+
 
 taskSchema.pre(/^find/, function (next) {
   this.populate({

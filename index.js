@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dontenv from "dotenv";
 import express from "express";
-import mongoose from "mongoose";
+import { connectDB } from "./src/config/db.js";
 import { authToken } from "./src/middleware/auth.middleware.js";
 import authRouter from "./src/routes/auth.Routes.js";
 import taskRouter from "./src/routes/task.Routes.js";
@@ -25,14 +25,7 @@ app.use(authToken);
 app.use("/user", userRouter);
 app.use("/task", taskRouter);
 
-mongoose
-  .connect(process.env.MONGODB_URL)
-  .then(() => {
-    console.log("connected to mongodb");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+connectDB();
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
