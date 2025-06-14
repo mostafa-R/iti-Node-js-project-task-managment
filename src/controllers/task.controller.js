@@ -3,7 +3,7 @@ import Task from "../models/task.js";
 
 export async function createTask(req, res) {
   try {
-    const { title, content, description, category, Status, dueDate, priority } =
+    const { title, content, description, category, status, dueDate, priority } =
       req.body;
 
     const userId = req.user.id;
@@ -22,7 +22,7 @@ export async function createTask(req, res) {
       content,
       dueDate,
       priority,
-      Status,
+      status,
       user: userId,
       category: categoryDoc?._id || null,
     });
