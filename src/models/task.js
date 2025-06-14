@@ -7,13 +7,13 @@ const taskSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    dueDate: {
+      type: Date,
+    }
+    ,
     description: {
       type: String,
       required: true,
-    },
-
-    dueDate: {
-      type: Date,
     },
     priority: {
       type: String,
