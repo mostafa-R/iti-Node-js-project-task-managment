@@ -9,8 +9,7 @@ const taskSchema = new mongoose.Schema(
     },
     dueDate: {
       type: Date,
-    }
-    ,
+    },
     description: {
       type: String,
       required: true,
@@ -20,7 +19,7 @@ const taskSchema = new mongoose.Schema(
       enum: ["low", "medium", "high"],
       default: "low",
     },
-    Status: {
+    status: {
       type: String,
       enum: ["pending", "progress", "completed"],
       default: "pending",
