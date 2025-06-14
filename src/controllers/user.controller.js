@@ -32,19 +32,24 @@ export const getAllUsers = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
-    const { name, role, restPassword, password } = req.body;
+    const { name, restPassword, password } = req.body;
     const findUser = await User.findById(id);
     if (!findUser) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    const user = await User.updateOne(
+    const updateUser = await User.findByIdAndUpdate(
       { _id: id },
       {
-        $set: { name, role, restPassword, password },
+        $set: { name, restPassword, password },
+      },
+      {
+        new: true,
+        runValidators: true,
       }
     );
-    res.status(200).json({ success: true, user });
+
+    res.status(200).json({ success: true, user: updateUser });
   } catch (error) {
     res
       .status(500)

@@ -5,21 +5,21 @@ const taskSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      index: true,
+    },
+    dueDate: {
+      type: Date,
     },
     description: {
       type: String,
       required: true,
-    },
-
-    dueDate: {
-      type: Date,
     },
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
       default: "low",
     },
-    Status: {
+    status: {
       type: String,
       enum: ["pending", "progress", "completed"],
       default: "pending",
@@ -43,6 +43,7 @@ const taskSchema = new mongoose.Schema(
 taskSchema.index({ title: "text", description: "text" });
 taskSchema.index({ category: 1 });
 taskSchema.index({ priority: 1 });
+
 
 taskSchema.pre(/^find/, function (next) {
   this.populate({
