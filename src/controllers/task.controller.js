@@ -1,5 +1,6 @@
 import Category from "../models/category.js";
 import Task from "../models/task.js";
+import { paginate } from "../utils/pagination.js";
 
 export async function createTask(req, res) {
   try {
@@ -48,24 +49,37 @@ export async function getTask(req, res) {
 
 export async function getTasks(req, res) {
   try {
-    const { status, priority, category, search } = req.query;
+    const { status, priority, category, search, page, limit } = req.query;
     const query = { user: req.user.id };
+    console.log("Query:", req.query);
+
+    let categoryName;
+    if (category && typeof category === "string") {
+      categoryName = await Category.findOne({
+        name: { $regex: category, $options: "i" },
+      });
+
+      if (categoryName) query.category = categoryName._id;
+    }
 
     if (status) query.status = status;
     if (priority) query.priority = priority;
-    if (category) query.category = category.types.name;
 
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
-        { "category.name": { $regex: search, $options: "i" } },
+        { priority: { $regex: search, $options: "i" } },
+        { status: { $regex: search, $options: "i" } },
       ];
     }
 
-    const tasks = await Task.find(query).sort({ dueDate: 1 });
+    const tasks = await paginate(Task, query, {
+      page,
+      limit,
+    });
 
-    res.json(tasks);
+    res.json({ success: true, ...tasks });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
