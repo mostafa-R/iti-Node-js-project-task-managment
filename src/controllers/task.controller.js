@@ -46,19 +46,24 @@ export async function getTask(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
 export async function getTasks(req, res) {
   try {
     const { status, priority, category, search, page, limit } = req.query;
     const query = { user: req.user.id };
-    console.log("Query:", req.query);
 
-    let categoryName;
     if (category && typeof category === "string") {
-      categoryName = await Category.findOne({
+      const categoryDoc = await Category.findOne({
         name: { $regex: category, $options: "i" },
       });
 
-      if (categoryName) query.category = categoryName._id;
+      if (categoryDoc) {
+        query.category = categoryDoc._id;
+      } else {
+        return res
+          .status(404)
+          .json({ error: `"${category}" category not found` });
+      }
     }
 
     if (status) query.status = status;
@@ -83,7 +88,6 @@ export async function getTasks(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
-
 export async function updateTask(req, res) {
   try {
     const task = await Task.findOneAndUpdate(
