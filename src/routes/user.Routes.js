@@ -41,4 +41,11 @@ userRoutes.patch(
   updateUser
 );
 
+userRoutes.delete(
+  "/:id",
+  authorizeRoles("admin", "user"),
+  authorizeSelfOnly(),
+  deleteUser
+);
+
 export default userRoutes;

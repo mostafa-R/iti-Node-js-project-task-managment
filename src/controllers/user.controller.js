@@ -124,3 +124,22 @@ export const searchUser = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+
+export const hardDeleteUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const findUser = await User.findByIdAndDelete(id);
+    if (!findUser) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    
+    res
+      .status(200)
+      .json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+}
