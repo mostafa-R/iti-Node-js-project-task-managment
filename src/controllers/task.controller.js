@@ -46,12 +46,12 @@ export async function getTask(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
-
 export async function getTasks(req, res) {
   try {
     const { status, priority, category, search, page, limit } = req.query;
     const query = { user: req.user.id };
-    
+    console.log("Query:", req.query);
+
     let categoryName;
     if (category && typeof category === "string") {
       categoryName = await Category.findOne({
