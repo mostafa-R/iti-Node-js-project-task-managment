@@ -4,7 +4,6 @@ import { comparePassword, hashPassword } from "../utils/bcrypt.js";
 import { clearJwtCookie } from "../utils/cookie.js";
 import { generateToken } from "../utils/jwtHelpers.js";
 
-
 export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -45,6 +44,13 @@ export const login = async (req, res) => {
         .json({ message: "Email or password is incorrect" });
     }
 
+    if (user.deletedAt !== null) {
+      return res.status(400).json({
+        message:
+          "User is deleted, you can not login. You can restore it again.",
+      });
+    }
+    
     const token = generateToken(user, res);
 
     res.status(200).json({
@@ -62,7 +68,6 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-
     clearJwtCookie(res);
     return res.status(200).json({
       success: true,
